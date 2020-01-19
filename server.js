@@ -24,7 +24,7 @@ app.use((error, req, res, next) => {
   } else {
     response = { error }
   }
-  res.status(500).send(response);
+  res.status(500).json(response);
 });
 
 app.get('/types', handleGetTypes);
