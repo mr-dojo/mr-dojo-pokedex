@@ -5,6 +5,18 @@ const cors = require("cors");
 const helmet = require("helmet");
 require("dotenv").config();
 
+
+const app = express();
+const PORT = process.env.PORT || 8000
+const morganSetting = process.env.NODE_ENV === "production" ? "tiny" : "dev";
+const validTypes = [`Bug`, `Dark`, `Dragon`, `Electric`, `Fairy`, `Fighting`, `Fire`, `Flying`, `Ghost`, `Grass`, `Ground`, `Ice`, `Normal`, `Poison`, `Psychic`, `Rock`, `Steel`, `Water`]
+
+
+app.use(morgan(morganSetting));
+app.use(cors());
+app.use(helmet());
+app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }))
+app.use(validateBearerToken);
 app.use((error, req, res, next) => {
   let response;
   if (process.env.NODE_ENV === 'production') {
@@ -14,17 +26,6 @@ app.use((error, req, res, next) => {
   }
   res.status(500).send(response);
 });
-
-const app = express();
-const PORT = process.env.PORT || 8000
-const morganSetting = process.env.NODE_ENV === "production" ? "tiny" : "dev";
-const validTypes = [`Bug`, `Dark`, `Dragon`, `Electric`, `Fairy`, `Fighting`, `Fire`, `Flying`, `Ghost`, `Grass`, `Ground`, `Ice`, `Normal`, `Poison`, `Psychic`, `Rock`, `Steel`, `Water`]
-
-app.use(morgan(morganSetting));
-app.use(cors());
-app.use(helmet());
-app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }))
-app.use(validateBearerToken);
 
 app.get('/types', handleGetTypes);
 app.get('/pokemon', handleGetPokemon);
